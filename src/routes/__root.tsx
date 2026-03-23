@@ -1,4 +1,8 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: necessary for this file */
+
+import codeHighlightCss from "@mantine/code-highlight/styles.css?url";
+import { createTheme, MantineProvider } from "@mantine/core";
+import mantineCss from "@mantine/core/styles.css?url";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import type { QueryClient } from "@tanstack/react-query";
 import {
@@ -20,6 +24,8 @@ interface MyRouterContext {
 
 const THEME_INIT_SCRIPT = `(function(){try{var stored=window.localStorage.getItem('theme');var mode=(stored==='light'||stored==='dark'||stored==='auto')?stored:'auto';var prefersDark=window.matchMedia('(prefers-color-scheme: dark)').matches;var resolved=mode==='auto'?(prefersDark?'dark':'light'):mode;var root=document.documentElement;root.classList.remove('light','dark');root.classList.add(resolved);if(mode==='auto'){root.removeAttribute('data-theme')}else{root.setAttribute('data-theme',mode)}root.style.colorScheme=resolved;}catch(e){}})();`;
 
+const theme = createTheme({});
+
 export const Route = createRootRouteWithContext<MyRouterContext>()({
 	head: () => ({
 		meta: [
@@ -37,6 +43,14 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 		links: [
 			{
 				rel: "stylesheet",
+				href: mantineCss,
+			},
+			{
+				rel: "stylesheet",
+				href: codeHighlightCss,
+			},
+			{
+				rel: "stylesheet",
 				href: appCss,
 			},
 		],
@@ -52,21 +66,23 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 				<HeadContent />
 			</head>
 			<body>
-				<TanStackQueryProvider>
-					{children}
-					<TanStackDevtools
-						config={{
-							position: "bottom-right",
-						}}
-						plugins={[
-							{
-								name: "Tanstack Router",
-								render: <TanStackRouterDevtoolsPanel />,
-							},
-							TanStackQueryDevtools,
-						]}
-					/>
-				</TanStackQueryProvider>
+				<MantineProvider theme={theme}>
+					<TanStackQueryProvider>
+						{children}
+						<TanStackDevtools
+							config={{
+								position: "bottom-right",
+							}}
+							plugins={[
+								{
+									name: "Tanstack Router",
+									render: <TanStackRouterDevtoolsPanel />,
+								},
+								TanStackQueryDevtools,
+							]}
+						/>
+					</TanStackQueryProvider>
+				</MantineProvider>
 				<Scripts />
 			</body>
 		</html>
