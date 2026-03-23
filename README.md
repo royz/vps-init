@@ -16,7 +16,11 @@ VPS Init is a lightweight Cloudflare-hosted web app that generates a tailored Ba
 	copy .env.example .env
 	```
 
-	Set `ENCRYPTION_KEY` in `.env` to a strong random value.
+	Generate a base64-encoded 32-byte key and set `ENCRYPTION_KEY` in `.env` to that value.
+
+	```bash
+	node -e "console.log(require('node:crypto').randomBytes(32).toString('base64'))"
+	```
 
 3. Set up your Cloudflare Wrangler config.
 
