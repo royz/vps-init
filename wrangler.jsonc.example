@@ -1,0 +1,28 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "vps-init",
+	"compatibility_date": "2026-03-23",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"main": "@tanstack/react-start/server-entry",
+	"observability": {
+		"enabled": true,
+	},
+  /** 
+  * Run `wrangler whoami` to get your account id once you are logged in with `wrangler login`
+  */
+	"account_id": "<your-cloudflare-account-id>",
+  /**
+  * Run `wrangler d1 create vps-init` to create a D1 databse.
+  * Then once prompted, type "Y" to auto add the database to your wrangler config.
+  * Put the binding name as "DB" since that's what the code references, but you can change this if you'd like, just make sure to update the code references as well.
+  */
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "<database-name>",
+			"database_id": "<database-id>"
+		}
+	]
+}

@@ -6,9 +6,13 @@
     "#/*": "./src/*"
   },
   "scripts": {
-    "dev": "vite dev --port 3000",
+    "dev": "vite dev",
     "build": "vite build",
+    "prepreview": "vite build",
     "preview": "vite preview",
+    "predeploy": "vite build",
+    "deploy": "wrangler deploy",
+    "cf-typegen": "wrangler types",
     "check": "biome check --write"
   },
   "dependencies": {
@@ -34,6 +38,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.5",
+    "@cloudflare/vite-plugin": "^1.30.0",
     "@tanstack/devtools-vite": "latest",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.0",
@@ -49,7 +54,8 @@
     "typescript": "^5.7.2",
     "vite": "^7.3.1",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^3.0.5"
+    "vitest": "^3.0.5",
+    "wrangler": "^4.76.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
