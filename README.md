@@ -38,6 +38,7 @@ VPS Init is a lightweight Cloudflare-hosted web app that generates a tailored Ba
 	- When Wrangler asks whether it should add the database to your config automatically, answer `Y`.
 	- Use `DB` as the binding name, since that is what the app expects.
 	- If you choose a different binding name, update the code to match.
+  - Now add `"migrations_dir": "./drizzle/"` to the binding for drizzle
 
 4. Generate Cloudflare types after the config is in place:
 
