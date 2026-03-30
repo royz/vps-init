@@ -1,4 +1,3 @@
-/** biome-ignore-all lint/security/noDangerouslySetInnerHtml: necessary for this file */
 
 import codeHighlightCss from "@mantine/code-highlight/styles.css?url";
 import { createTheme, MantineProvider } from "@mantine/core";
@@ -8,12 +7,11 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { ColorSchemeScript, mantineHtmlProps } from '@mantine/core';
 import appCss from "../styles.css?url";
 
 interface MyRouterContext {
 }
-
-const THEME_INIT_SCRIPT = `(function(){try{var stored=window.localStorage.getItem('mantine-color-scheme');var mode=(stored==='light'||stored==='dark'||stored==='auto')?stored:'auto';var prefersDark=window.matchMedia('(prefers-color-scheme: dark)').matches;var resolved=mode==='auto'?(prefersDark?'dark':'light'):mode;var root=document.documentElement;root.setAttribute('data-mantine-color-scheme',resolved);root.style.colorScheme=resolved;}catch(e){}})();`;
 
 const theme = createTheme({
   primaryColor: "teal",
@@ -54,10 +52,10 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" {...mantineHtmlProps}>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <HeadContent />
+        <ColorSchemeScript />
       </head>
       <body>
         <MantineProvider theme={theme} defaultColorScheme="auto">
