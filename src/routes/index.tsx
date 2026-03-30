@@ -1,9 +1,6 @@
-import {
-  Box, Grid, useComputedColorScheme,
-  useMantineColorScheme
-} from "@mantine/core";
+import { Box, Grid } from "@mantine/core";
 import { createFileRoute } from "@tanstack/react-router";
-import { AppHeader } from "#/components/home/AppHeader";
+import { Header } from "#/components/home/Header";
 import { ConfigForm } from "#/components/home/ConfigForm";
 import { ScriptPreview } from "#/components/home/ScriptPreview";
 import { buildScript } from "#/lib/script-builder";
@@ -11,14 +8,10 @@ import { useConfigStore, useHomeUiStore } from "#/stores/home-store";
 
 export const Route = createFileRoute("/")({ component: HomePage });
 
-// ── Page component ────────────────────────────────────────────────────────────
-
 function HomePage() {
   const config = useConfigStore((state) => state.config);
   const copied = useHomeUiStore((state) => state.copied);
   const setCopied = useHomeUiStore((state) => state.setCopied);
-  const { setColorScheme } = useMantineColorScheme();
-  const computedScheme = useComputedColorScheme("light");
   const script = buildScript(config);
 
   function handleCopy() {
@@ -38,16 +31,12 @@ function HomePage() {
     URL.revokeObjectURL(url);
   }
 
-  const isDark = computedScheme === "dark";
-
   return (
     <Box mih="100dvh">
-      <AppHeader
+      <Header
         copied={copied}
-        isDark={isDark}
         onCopy={handleCopy}
         onDownload={handleDownload}
-        onToggleTheme={() => setColorScheme(isDark ? "light" : "dark")}
       />
       <Box px={{ base: "md", sm: "xl" }} py="lg" maw={1400} mx="auto">
         <Grid gutter="lg">

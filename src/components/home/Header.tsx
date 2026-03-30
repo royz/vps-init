@@ -2,6 +2,7 @@ import {
   ActionIcon,
   Box,
   Group,
+  Stack,
   Text,
   ThemeIcon,
   Title,
@@ -9,48 +10,38 @@ import {
 } from "@mantine/core";
 import { Copy, Download, Moon, Server, Sun } from "lucide-react";
 import { ResetButton } from "./ResetButton";
+import classes from "./Header.module.css";
+import { useComputedColorScheme, useMantineColorScheme } from '@mantine/core';
 
 type AppHeaderProps = {
   copied: boolean;
-  isDark: boolean;
   onCopy: () => void;
   onDownload: () => void;
-  onToggleTheme: () => void;
 };
 
-export function AppHeader({
+export function Header({
   copied,
-  isDark,
   onCopy,
   onDownload,
-  onToggleTheme,
 }: AppHeaderProps) {
+  const { setColorScheme, colorScheme } = useMantineColorScheme();
+  const computedColorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true });
+
   return (
-    <Box
-      component="header"
-      px={{ base: "md", sm: "xl" }}
-      py="md"
-      style={(theme) => ({
-        borderBottom: `1px solid ${isDark ? theme.colors.dark[5] : theme.colors.gray[2]}`,
-        position: "sticky",
-        top: 0,
-        zIndex: 100,
-        background: isDark ? theme.colors.dark[7] : "#fff",
-      })}
-    >
-      <Group justify="space-between" maw={1400} mx="auto">
+    <Box component="header" className={classes.header}>
+      <Group justify="space-between" maw={1400} mx="auto" w="100%" px="xl">
         <Group gap="sm">
           <ThemeIcon variant="filled" color="teal" size={38} radius="md">
             <Server size={20} />
           </ThemeIcon>
-          <Box>
+          <Stack gap={0}>
             <Title order={4} lh={1.2} c="teal">
               VPS Init
             </Title>
             <Text fz="xs" c="dimmed" lh={1}>
               Bootstrap script generator
             </Text>
-          </Box>
+          </Stack>
         </Group>
         <Group gap="xs">
           <ResetButton />
@@ -75,19 +66,19 @@ export function AppHeader({
               <Download size={16} />
             </ActionIcon>
           </Tooltip>
-          <Tooltip label={isDark ? "Light mode" : "Dark mode"} withArrow>
+          <Tooltip label={colorScheme === "dark" ? "Light mode" : "Dark mode"} withArrow>
             <ActionIcon
               variant="subtle"
               color="gray"
               size="lg"
               radius="md"
-              onClick={onToggleTheme}
+              onClick={() => setColorScheme(computedColorScheme === 'light' ? 'dark' : 'light')}
             >
-              {isDark ? <Sun size={18} /> : <Moon size={18} />}
+              {colorScheme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
             </ActionIcon>
           </Tooltip>
         </Group>
       </Group>
-    </Box>
+    </Box >
   );
 }
