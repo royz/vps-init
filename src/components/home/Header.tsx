@@ -29,7 +29,7 @@ export function Header({
 
   return (
     <Box component="header" className={classes.header}>
-      <Group justify="space-between" maw={1400} mx="auto" w="100%" px="xl">
+      <Group justify="space-between" w="100%">
         <Group gap="sm">
           <ThemeIcon variant="filled" color="teal" size={38} radius="md">
             <Server size={20} />

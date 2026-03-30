@@ -10,36 +10,22 @@ type ScriptPreviewProps = {
 export function ScriptPreview({ hasSensitiveValues, script }: ScriptPreviewProps) {
   return (
     <Box
+      py="xs"
       style={{
         position: "sticky",
-        top: rem(95),
-        maxHeight: "calc(100dvh - 115px)",
+        top: "var(--header-height)",
+        maxHeight: "calc(100dvh - var(--header-height))",
         display: "flex",
         flexDirection: "column",
         gap: rem(12),
       }}
     >
-      <Group justify="space-between" align="center">
-        <Box>
-          <Title order={5} fw={700}>
-            Generated script
-          </Title>
-          <Text fz="xs" c="dimmed">
-            vps-init.sh — review before running
-          </Text>
-        </Box>
-      </Group>
-
       <Paper
         withBorder
         radius="md"
-        style={{
-          overflow: "hidden",
-          display: "flex",
-          flexDirection: "column",
-        }}
+        flex={1}
       >
-        <ScrollArea style={{ flex: 1 }} scrollbarSize={6}>
+        <ScrollArea style={{ height: "calc(100dvh - var(--header-height) - 115px)" }} scrollbarSize={6}>
           <CodeHighlight
             code={script}
             language="bash"

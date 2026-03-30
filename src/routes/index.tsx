@@ -32,13 +32,13 @@ function HomePage() {
   }
 
   return (
-    <Box mih="100dvh">
+    <Box mih="100dvh" maw={1400} mx="auto" px="md">
       <Header
         copied={copied}
         onCopy={handleCopy}
         onDownload={handleDownload}
       />
-      <Box px={{ base: "md", sm: "xl" }} py="lg" maw={1400} mx="auto">
+      <Box>
         <Grid gutter="lg">
           <Grid.Col span={{ base: 12, lg: 7 }}>
             <ConfigForm />
