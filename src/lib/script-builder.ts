@@ -1,4 +1,9 @@
 import type { VpsConfig } from "./vps-config";
+import dedent from "dedent";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 /** Extract just the auth key from either a bare token or a full install command. */
 function parseTailscaleKey(raw: string): string {
@@ -23,34 +28,31 @@ function block(title: string, lines: string[]): string {
 }
 
 export function buildScript(config: VpsConfig): string {
-	const generated = new Date().toLocaleDateString("en-US", {
-		year: "numeric",
-		month: "long",
-		day: "numeric",
-	});
+	const generatedAt = dayjs().utc().format("YYYY-MM-DD HH:mm (UTC)")
 	const sections: string[] = [];
 
 	// ── Shebang & header ─────────────────────────────────────
-	sections.push(`#!/usr/bin/env bash
-# ════════════════════════════════════════════════════════════
-# VPS Init — Bootstrap Script
-# Generated: ${generated}
-# ════════════════════════════════════════════════════════════
-# Review this script carefully before running.
-# Run as root or with: sudo bash <script>
-# Tested against: Ubuntu 22.04 LTS / Ubuntu 24.04 LTS
-# ════════════════════════════════════════════════════════════
+	sections.push(dedent`#!/usr/bin/env bash
+    # ════════════════════════════════════════════════════════════
+    # VPS Init — Bootstrap Script
+    # Generated at: ${generatedAt}
+    # ════════════════════════════════════════════════════════════
+    # Review this script carefully before running.
+    # Run as root or with: sudo bash <script>
+    # Tested against: Ubuntu 22.04 LTS / Ubuntu 24.04 LTS
+    # ════════════════════════════════════════════════════════════
 
-set -euo pipefail
-export DEBIAN_FRONTEND=noninteractive
-TARGET_USER="${config.username.trim()}"
-[ -z "$TARGET_USER" ] && { echo "❌  TARGET_USER is not set — set a username before running this script."; exit 1; }
+    set -euo pipefail
+    export DEBIAN_FRONTEND=noninteractive
+    TARGET_USER="${config.username.trim()}"
+    [ -z "$TARGET_USER" ] && { echo "❌  TARGET_USER is not set — set a username before running this script."; exit 1; }
 
-echo ""
-echo "┌──────────────────────────────────────────────────────────┐"
-echo "│             VPS Init — Bootstrap Starting                │"
-echo "└──────────────────────────────────────────────────────────┘"
-echo ""`);
+    echo ""
+    echo "┌──────────────────────────────────────────────────────────┐"
+    echo "│             VPS Init — Bootstrap Starting                │"
+    echo "└──────────────────────────────────────────────────────────┘"
+    echo ""
+  `);
 
 	// ── System update ────────────────────────────────────────
 	if (config.updatePackages) {
