@@ -39,16 +39,14 @@ import {
   TIMEZONES,
   type VpsConfig,
 } from "#/lib/vps-config";
+import { useConfigStore } from "#/stores/home-store";
 import { SecretBadge } from "./SecretBadge";
 import { SectionCard } from "./SectionCard";
-import type { ConfigUpdater } from "./types";
 
-type ConfigFormProps = {
-  config: VpsConfig;
-  update: ConfigUpdater;
-};
+export function ConfigForm() {
+  const config = useConfigStore((state) => state.config);
+  const update = useConfigStore((state) => state.updateConfig);
 
-export function ConfigForm({ config, update }: ConfigFormProps) {
   return (
     <Stack gap="sm">
       <Box mb={4}>

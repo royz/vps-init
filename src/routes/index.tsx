@@ -1,40 +1,25 @@
 import {
-  Box,
-  Button,
-  Grid,
-  Group,
-  Modal,
-  Text,
-  useComputedColorScheme,
-  useMantineColorScheme,
+  Box, Grid, useComputedColorScheme,
+  useMantineColorScheme
 } from "@mantine/core";
 import { createFileRoute } from "@tanstack/react-router";
-import { useCallback, useMemo, useState } from "react";
 import { AppHeader } from "#/components/home/AppHeader";
 import { ConfigForm } from "#/components/home/ConfigForm";
 import { ScriptPreview } from "#/components/home/ScriptPreview";
 import { buildScript } from "#/lib/script-builder";
-import { DEFAULT_CONFIG, type VpsConfig } from "#/lib/vps-config";
+import { useConfigStore, useHomeUiStore } from "#/stores/home-store";
 
 export const Route = createFileRoute("/")({ component: HomePage });
 
 // ── Page component ────────────────────────────────────────────────────────────
 
 function HomePage() {
-  const [config, setConfig] = useState<VpsConfig>(DEFAULT_CONFIG);
-  const [copied, setCopied] = useState(false);
-  const [resetModalOpen, setResetModalOpen] = useState(false);
+  const config = useConfigStore((state) => state.config);
+  const copied = useHomeUiStore((state) => state.copied);
+  const setCopied = useHomeUiStore((state) => state.setCopied);
   const { setColorScheme } = useMantineColorScheme();
   const computedScheme = useComputedColorScheme("light");
-
-  const update = useCallback(
-    <K extends keyof VpsConfig>(key: K, value: VpsConfig[K]) => {
-      setConfig((prev) => ({ ...prev, [key]: value }));
-    },
-    [],
-  );
-
-  const script = useMemo(() => buildScript(config), [config]);
+  const script = buildScript(config);
 
   function handleCopy() {
     navigator.clipboard.writeText(script).then(() => {
@@ -53,12 +38,6 @@ function HomePage() {
     URL.revokeObjectURL(url);
   }
 
-  function handleResetConfirm() {
-    setConfig(DEFAULT_CONFIG);
-    setCopied(false);
-    setResetModalOpen(false);
-  }
-
   const isDark = computedScheme === "dark";
 
   return (
@@ -68,37 +47,12 @@ function HomePage() {
         isDark={isDark}
         onCopy={handleCopy}
         onDownload={handleDownload}
-        onReset={() => setResetModalOpen(true)}
         onToggleTheme={() => setColorScheme(isDark ? "light" : "dark")}
       />
-
-      <Modal
-        opened={resetModalOpen}
-        onClose={() => setResetModalOpen(false)}
-        title="Reset all options?"
-        centered
-      >
-        <Text fz="sm" c="dimmed" mb="md">
-          This will restore all configuration fields to their default values.
-        </Text>
-        <Group justify="flex-end">
-          <Button
-            variant="default"
-            size="xs"
-            onClick={() => setResetModalOpen(false)}
-          >
-            Cancel
-          </Button>
-          <Button color="red" size="xs" onClick={handleResetConfirm}>
-            Yes, reset
-          </Button>
-        </Group>
-      </Modal>
-
       <Box px={{ base: "md", sm: "xl" }} py="lg" maw={1400} mx="auto">
         <Grid gutter="lg">
           <Grid.Col span={{ base: 12, lg: 7 }}>
-            <ConfigForm config={config} update={update} />
+            <ConfigForm />
           </Grid.Col>
 
           <Grid.Col span={{ base: 12, lg: 5 }}>

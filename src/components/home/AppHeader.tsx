@@ -7,14 +7,14 @@ import {
   Title,
   Tooltip,
 } from "@mantine/core";
-import { Copy, Download, Moon, RefreshCw, Server, Sun } from "lucide-react";
+import { Copy, Download, Moon, Server, Sun } from "lucide-react";
+import { ResetButton } from "./ResetButton";
 
 type AppHeaderProps = {
   copied: boolean;
   isDark: boolean;
   onCopy: () => void;
   onDownload: () => void;
-  onReset: () => void;
   onToggleTheme: () => void;
 };
 
@@ -23,7 +23,6 @@ export function AppHeader({
   isDark,
   onCopy,
   onDownload,
-  onReset,
   onToggleTheme,
 }: AppHeaderProps) {
   return (
@@ -54,17 +53,7 @@ export function AppHeader({
           </Box>
         </Group>
         <Group gap="xs">
-          <Tooltip label="Reset all options to defaults" withArrow>
-            <ActionIcon
-              variant="default"
-              color="gray"
-              size="lg"
-              radius="md"
-              onClick={onReset}
-            >
-              <RefreshCw size={16} />
-            </ActionIcon>
-          </Tooltip>
+          <ResetButton />
           <Tooltip label={copied ? "Copied!" : "Copy script"} withArrow>
             <ActionIcon
               variant={copied ? "filled" : "default"}
