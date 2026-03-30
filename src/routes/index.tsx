@@ -12,6 +12,7 @@ import {
   NumberInput,
   Paper,
   PasswordInput,
+  Modal,
   rem,
   ScrollArea,
   SegmentedControl,
@@ -142,6 +143,7 @@ function SectionCard({
 function HomePage() {
   const [config, setConfig] = useState<VpsConfig>(DEFAULT_CONFIG);
   const [copied, setCopied] = useState(false);
+  const [resetModalOpen, setResetModalOpen] = useState(false);
   const { setColorScheme } = useMantineColorScheme();
   const computedScheme = useComputedColorScheme("light");
 
@@ -171,10 +173,39 @@ function HomePage() {
     URL.revokeObjectURL(url);
   }
 
+  function handleResetConfirm() {
+    setConfig(DEFAULT_CONFIG);
+    setCopied(false);
+    setResetModalOpen(false);
+  }
+
   const isDark = computedScheme === "dark";
 
   return (
     <Box mih="100dvh">
+      <Modal
+        opened={resetModalOpen}
+        onClose={() => setResetModalOpen(false)}
+        title="Reset all options?"
+        centered
+      >
+        <Text fz="sm" c="dimmed" mb="md">
+          This will restore all configuration fields to their default values.
+        </Text>
+        <Group justify="flex-end">
+          <Button
+            variant="default"
+            size="xs"
+            onClick={() => setResetModalOpen(false)}
+          >
+            Cancel
+          </Button>
+          <Button color="red" size="xs" onClick={handleResetConfirm}>
+            Yes, reset
+          </Button>
+        </Group>
+      </Modal>
+
       {/* ── Header ── */}
       <Box
         component="header"
@@ -203,6 +234,17 @@ function HomePage() {
             </Box>
           </Group>
           <Group gap="xs">
+            <Tooltip label="Reset all options to defaults" withArrow>
+              <ActionIcon
+                variant="default"
+                color="gray"
+                size="lg"
+                radius="md"
+                onClick={() => setResetModalOpen(true)}
+              >
+                <RefreshCw size={16} />
+              </ActionIcon>
+            </Tooltip>
             <Tooltip label={copied ? "Copied!" : "Copy script"} withArrow>
               <ActionIcon
                 variant={copied ? "filled" : "default"}
@@ -763,20 +805,6 @@ function HomePage() {
                 </Alert>
               </SectionCard>
 
-              {/* Reset */}
-              <Group justify="flex-end" mt="xs" pb="xl">
-                <Tooltip label="Reset all options to defaults" withArrow>
-                  <Button
-                    variant="subtle"
-                    color="gray"
-                    size="xs"
-                    leftSection={<RefreshCw size={13} />}
-                    onClick={() => setConfig(DEFAULT_CONFIG)}
-                  >
-                    Reset to defaults
-                  </Button>
-                </Tooltip>
-              </Group>
             </Stack>
           </Grid.Col>
 
