@@ -13,3 +13,4 @@ todos.json
 .wrangler
 wrangler.jsonc
 wrangler.toml
+install-output.log
