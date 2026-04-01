@@ -1,12 +1,13 @@
-import { useConfigStore, useHomeUiStore } from "#/stores/home-store";
-import { ActionIcon, Button, Group, Modal, Text, Tooltip } from "@mantine/core";
+import { Button, Group, Modal, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { RefreshCw } from "lucide-react";
+import { useConfigStore, useHomeUiStore } from "#/stores/home-store";
+import { IconButton } from "../IconButton";
 
 export function ResetButton() {
   const resetConfig = useConfigStore((state) => state.resetConfig);
   const setCopied = useHomeUiStore((state) => state.setCopied);
-  const [opened, { open, close }] = useDisclosure();
+  const [opened, { toggle, close }] = useDisclosure();
 
   function handleResetConfirm() {
     resetConfig();
@@ -16,17 +17,14 @@ export function ResetButton() {
 
   return (
     <>
-      <Tooltip label="Reset all options to defaults" withArrow>
-        <ActionIcon
-          variant="default"
-          color="gray"
-          size="lg"
-          radius="md"
-          onClick={open}
-        >
-          <RefreshCw size={16} />
-        </ActionIcon>
-      </Tooltip>
+      <IconButton
+        icon={RefreshCw}
+        onClick={toggle}
+        description="Reset all options to defaults"
+        hotkey="Mod+R"
+        showSuccessState
+      />
+
       <Modal
         opened={opened}
         onClose={close}

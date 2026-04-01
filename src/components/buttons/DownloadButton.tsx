@@ -18,6 +18,12 @@ export function DownloadButton() {
   }
 
   return (
-    <IconButton onClick={handleDownload} icon={Download} hotkey="Mod+D" description="Download script" />
+    <IconButton
+      onClick={handleDownload}
+      icon={Download}
+      hotkey="Mod+D"
+      description="Download script"
+      showSuccessState
+    />
   )
 }
