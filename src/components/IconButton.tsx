@@ -58,6 +58,7 @@ export function IconButton({ icon, onClick, hotkey, description, showSuccessStat
         variant="default"
         size="lg"
         radius="md"
+        onClick={handleClick}
         {...actionIconProps}
       >
         <Icon size={16} />
