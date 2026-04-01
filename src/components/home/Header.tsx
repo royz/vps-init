@@ -1,33 +1,23 @@
 import {
-  ActionIcon,
   Anchor,
   Box,
   Group,
   Stack,
   Text,
   ThemeIcon,
-  Title,
-  Tooltip, useComputedColorScheme, useMantineColorScheme
+  Title
 } from "@mantine/core";
-import { Copy, Download, ExternalLink, Moon, Server, Sun } from "lucide-react";
+import { ExternalLink, Server } from "lucide-react";
 import { logCustomEvent } from "#/integrations/posthog";
+import { CopyButton } from "../buttons/CopyButton";
 import { DownloadButton } from "../buttons/DownloadButton";
 import { ResetButton } from "../buttons/ResetButton";
 import { ScriptPreviewButton } from "../buttons/ScriptPreviewButton";
+import { ThemeToggleButton } from "../buttons/ThemeToggleButton";
 import classes from "./Header.module.css";
 
-type AppHeaderProps = {
-  copied: boolean;
-  onCopy: () => void;
-};
 
-export function Header({
-  copied,
-  onCopy,
-}: AppHeaderProps) {
-  const { setColorScheme, colorScheme } = useMantineColorScheme();
-  const computedColorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true });
-
+export function Header() {
   return (
     <Box component="header" className={classes.header}>
       <Group justify="space-between" w="100%">
@@ -67,29 +57,9 @@ export function Header({
         <Group gap="xs">
           <ScriptPreviewButton />
           <ResetButton />
-          <Tooltip label={copied ? "Copied!" : "Copy script"} withArrow>
-            <ActionIcon
-              variant={copied ? "filled" : "default"}
-              color={copied ? "teal" : undefined}
-              size="lg"
-              radius="md"
-              onClick={onCopy}
-            >
-              <Copy size={16} />
-            </ActionIcon>
-          </Tooltip>
+          <CopyButton />
           <DownloadButton />
-          <Tooltip label={colorScheme === "dark" ? "Light mode" : "Dark mode"} withArrow>
-            <ActionIcon
-              variant="subtle"
-              color="gray"
-              size="lg"
-              radius="md"
-              onClick={() => setColorScheme(computedColorScheme === 'light' ? 'dark' : 'light')}
-            >
-              {colorScheme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-            </ActionIcon>
-          </Tooltip>
+          <ThemeToggleButton />
         </Group>
       </Group>
     </Box >
