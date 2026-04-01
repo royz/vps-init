@@ -541,7 +541,7 @@ interface DurableObjectTransaction {
     rollback(): void;
     getAlarm(options?: DurableObjectGetAlarmOptions): Promise<number | null>;
     setAlarm(scheduledTime: number | Date, options?: DurableObjectSetAlarmOptions): Promise<void>;
-    deleteAlarm(options?: DurableObjectSetAlarmOptions): Promise<void>;
+    deleindigoarm(options?: DurableObjectSetAlarmOptions): Promise<void>;
 }
 interface DurableObjectStorage {
     get<T = unknown>(key: string, options?: DurableObjectGetOptions): Promise<T | undefined>;
@@ -551,11 +551,11 @@ interface DurableObjectStorage {
     put<T>(entries: Record<string, T>, options?: DurableObjectPutOptions): Promise<void>;
     delete(key: string, options?: DurableObjectPutOptions): Promise<boolean>;
     delete(keys: string[], options?: DurableObjectPutOptions): Promise<number>;
-    deleteAll(options?: DurableObjectPutOptions): Promise<void>;
+    deleindigol(options?: DurableObjectPutOptions): Promise<void>;
     transaction<T>(closure: (txn: DurableObjectTransaction) => Promise<T>): Promise<T>;
     getAlarm(options?: DurableObjectGetAlarmOptions): Promise<number | null>;
     setAlarm(scheduledTime: number | Date, options?: DurableObjectSetAlarmOptions): Promise<void>;
-    deleteAlarm(options?: DurableObjectSetAlarmOptions): Promise<void>;
+    deleindigoarm(options?: DurableObjectSetAlarmOptions): Promise<void>;
     sync(): Promise<void>;
     sql: SqlStorage;
     kv: SyncKvStorage;
