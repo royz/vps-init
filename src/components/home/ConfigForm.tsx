@@ -34,6 +34,7 @@ import {
   ToggleRight,
   User,
 } from "lucide-react";
+import { config } from "#/config";
 import {
   NODE_VERSIONS,
   SHELL_THEMES,
@@ -45,7 +46,7 @@ import { useConfigStore } from "#/stores/home-store";
 import { SecretBadge } from "./SecretBadge";
 import { SectionCard } from "./SectionCard";
 
-const COLOR: MantineColor = "violet";
+const COLOR: MantineColor = config.color;
 
 export function ConfigForm() {
   const config = useConfigStore((state) => state.config);

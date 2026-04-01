@@ -11,11 +11,12 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { config } from "#/config";
 import { PostHogProvider } from "#/integrations/posthog";
 import appCss from "../styles.css?url";
 
 const theme = createTheme({
-  primaryColor: "indigo",
+  primaryColor: config.color,
   fontFamily: "Manrope, ui-sans-serif, system-ui, sans-serif",
 });
 

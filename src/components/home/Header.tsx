@@ -26,7 +26,7 @@ export function Header() {
           <Group gap="sm">
             <Image src="/logo.png" alt="VPS Init logo" w={50} h={50} radius="md" />
             <Stack gap={0}>
-              <Title order={4} lh={1.2} c="indigo">
+              <Title order={4} lh={1.2} c="var(--mantine-primary-color-6)">
                 VPS Init
               </Title>
               <Group gap={6} align="center">
@@ -38,7 +38,7 @@ export function Header() {
                   target="_blank"
                   fz="xs"
                   underline="always"
-                  c="indigo"
+                  c="var(--mantine-primary-color-6)"
                   rel="noopener"
                   inline
                   aria-label="Visit my personal website royz.dev"
