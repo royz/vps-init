@@ -1,17 +1,17 @@
 import {
   ActionIcon,
+  Anchor,
   Box,
   Group,
   Stack,
   Text,
   ThemeIcon,
   Title,
-  Tooltip,
+  Tooltip, useComputedColorScheme, useMantineColorScheme
 } from "@mantine/core";
-import { Copy, Download, Moon, Server, Sun } from "lucide-react";
-import { ResetButton } from "./ResetButton";
+import { Copy, Download, ExternalLink, Moon, Server, Sun } from "lucide-react";
 import classes from "./Header.module.css";
-import { useComputedColorScheme, useMantineColorScheme } from '@mantine/core';
+import { ResetButton } from "./ResetButton";
 
 type AppHeaderProps = {
   copied: boolean;
@@ -38,9 +38,31 @@ export function Header({
             <Title order={4} lh={1.2} c="teal">
               VPS Init
             </Title>
-            <Text fz="xs" c="dimmed" lh={1}>
-              Bootstrap script generator
-            </Text>
+            <Group gap={6} align="center">
+              <Text fz="xs" c="dimmed" lh={1}>
+                Bootstrap script generator
+              </Text>
+              <Text fz="xs" c="dimmed" lh={1}>
+                -
+              </Text>
+              <Anchor
+                href="https://royz.dev?utm_source=vps-init"
+                target="_blank"
+                fz="xs"
+                underline="always"
+                c="teal"
+                rel="noopener"
+                inline
+                aria-label="Visit my personal website royz.dev"
+              >
+                <Group gap={5}>
+                  <Text size="sm">
+                    royz.dev
+                  </Text>
+                  <ExternalLink size={12} />
+                </Group>
+              </Anchor>
+            </Group>
           </Stack>
         </Group>
         <Group gap="xs">

@@ -1,7 +1,7 @@
 import { Box, Grid } from "@mantine/core";
 import { createFileRoute } from "@tanstack/react-router";
-import { Header } from "#/components/home/Header";
 import { ConfigForm } from "#/components/home/ConfigForm";
+import { Header } from "#/components/home/Header";
 import { ScriptPreview } from "#/components/home/ScriptPreview";
 import { buildScript } from "#/lib/script-builder";
 import { useConfigStore, useHomeUiStore } from "#/stores/home-store";
