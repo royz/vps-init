@@ -18,7 +18,7 @@ export function ScriptPreviewButton() {
 
   return (
     <>
-      <IconButton icon={Eye} hotkey="Mod+P" description="Preview Script" onClick={toggle} />
+      <IconButton icon={Eye} hotkey="Mod+P" description="Preview script" onClick={toggle} />
       <Drawer opened={opened} onClose={close} position="right" size="1200">
         <Box py="xs">
           <Paper
