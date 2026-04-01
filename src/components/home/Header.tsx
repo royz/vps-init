@@ -11,6 +11,7 @@ import {
 } from "@mantine/core";
 import { Copy, Download, ExternalLink, Moon, Server, Sun } from "lucide-react";
 import { logCustomEvent } from "#/integrations/posthog";
+import { DisplayHotkey } from "../DisplayHotkey";
 import classes from "./Header.module.css";
 import { ResetButton } from "./ResetButton";
 import { ScriptPreviewButton } from "./ScriptPreviewButton";
@@ -42,10 +43,7 @@ export function Header({
             </Title>
             <Group gap={6} align="center">
               <Text fz="xs" c="dimmed" lh={1}>
-                Bootstrap script generator
-              </Text>
-              <Text fz="xs" c="dimmed" lh={1}>
-                -
+                Bootstrap script generator by
               </Text>
               <Anchor
                 href="https://royz.dev?utm_source=vps-init"
@@ -69,7 +67,7 @@ export function Header({
           </Stack>
         </Group>
         <Group gap="xs">
-          <ScriptPreviewButton script="" hasSensitiveValues />
+          <ScriptPreviewButton />
           <ResetButton />
           <Tooltip label={copied ? "Copied!" : "Copy script"} withArrow>
             <ActionIcon

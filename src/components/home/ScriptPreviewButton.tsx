@@ -1,76 +1,46 @@
 import { CodeHighlight } from "@mantine/code-highlight";
-import { ActionIcon, Alert, Box, Drawer, Group, Paper, rem, ScrollArea, Text, Title } from "@mantine/core";
+import { Box, Drawer, Paper, rem } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { Cloud, Eye, FlameKindling } from "lucide-react";
+import { Eye } from "lucide-react";
+import { useMemo } from "react";
+import { buildScript } from "#/lib/script-builder";
+import { useConfigStore } from "#/stores/home-store";
+import { IconButton } from "../IconButton";
 
-type ScriptPreviewProps = {
-  hasSensitiveValues: boolean;
-  script: string;
-};
+export function ScriptPreviewButton() {
+  const [opened, { close, toggle }] = useDisclosure();
+  const config = useConfigStore((state) => state.config);
 
-export function ScriptPreviewButton({ hasSensitiveValues, script }: ScriptPreviewProps) {
-  const [opened, { open, close }] = useDisclosure();
+  const script = useMemo(() => {
+    if (!opened) return "";
+    return buildScript(config);
+  }, [config, opened]);
 
   return (
     <>
-      <ActionIcon onClick={open}>
-        <Eye />
-      </ActionIcon>
-      <Drawer opened={opened} onClose={close}>
-        <Box
-          py="xs"
-          style={{
-            position: "sticky",
-            top: "var(--header-height)",
-            maxHeight: "calc(100dvh - var(--header-height))",
-            display: "flex",
-            flexDirection: "column",
-            gap: rem(12),
-          }}
-        >
+      <IconButton icon={Eye} hotkey="Mod+P" description="Preview Script" onClick={toggle} />
+      <Drawer opened={opened} onClose={close} position="right" size="1200">
+        <Box py="xs">
           <Paper
             withBorder
             radius="md"
             flex={1}
           >
-            <ScrollArea style={{ height: "calc(100dvh - var(--header-height) - 115px)" }} scrollbarSize={6}>
-              <CodeHighlight
-                code={script}
-                language="bash"
-                withCopyButton={false}
-                styles={{
-                  pre: {
-                    borderRadius: 0,
-                    margin: 0,
-                    fontSize: rem(11.5),
-                  },
-                }}
-              />
-            </ScrollArea>
+            <CodeHighlight
+              code={script}
+              language="bash"
+              withCopyButton={true}
+              styles={{
+                pre: {
+                  borderRadius: 0,
+                  margin: 0,
+                  fontSize: rem(11.5),
+                },
+              }}
+            />
           </Paper>
 
-          <Paper withBorder radius="md" p="sm">
-            <Group gap="xs" align="flex-start">
-              <FlameKindling
-                size={15}
-                color="var(--mantine-color-teal-6)"
-                style={{ marginTop: 2, flexShrink: 0 }}
-              />
-              <Box>
-                <Text fz="xs" fw={600} mb={4}>
-                  How to run
-                </Text>
-                <Text fz="xs" c="dimmed">
-                  Download, review, upload to your server, then:
-                </Text>
-                <Text fz="xs" ff="monospace" mt={4}>
-                  sudo bash vps-init.sh
-                </Text>
-              </Box>
-            </Group>
-          </Paper>
-
-          {hasSensitiveValues && (
+          {/* {1 && (
             <Alert icon={<Cloud size={14} />} color="orange" variant="light" p="sm" fz="xs">
               <Text fz="xs" fw={600} mb={2}>
                 Sensitive values in your script
@@ -79,7 +49,7 @@ export function ScriptPreviewButton({ hasSensitiveValues, script }: ScriptPrevie
                 The downloaded file will contain your sensitive inputs. Store it securely and delete it after use.
               </Text>
             </Alert>
-          )}
+          )} */}
         </Box>
       </Drawer>
     </>
