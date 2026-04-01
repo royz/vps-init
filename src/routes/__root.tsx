@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 import { ColorSchemeScript, mantineHtmlProps } from '@mantine/core';
 import appCss from "../styles.css?url";
+import PostHogProvider from "#/integrations/posthog";
 
 interface MyRouterContext {
 }
@@ -58,10 +59,12 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <ColorSchemeScript />
       </head>
       <body>
-        <MantineProvider theme={theme} defaultColorScheme="auto">
-          {children}
-        </MantineProvider>
-        <Scripts />
+        <PostHogProvider>
+          <MantineProvider theme={theme} defaultColorScheme="auto">
+            {children}
+          </MantineProvider>
+          <Scripts />
+        </PostHogProvider>
       </body>
     </html>
   );

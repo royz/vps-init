@@ -13,9 +13,7 @@
   * Run `wrangler whoami` to get your account id once you are logged in with `wrangler login`
   */
 	"account_id": "<your-cloudflare-account-id>",
-  /**
-  * Run `wrangler d1 create vps-init` to create a D1 databse.
-  * Then once prompted, type "Y" to auto add the database to your wrangler config.
-  * Put the binding name as "DB" since that's what the code references, but you can change this if you'd like, just make sure to update the code references as well.
-  */
+  "vars": {
+    "VITE_POSTHOG_KEY": "<your-posthog-key> (optional, only needed if you want to use PostHog for analytics)"
+  }
 }
