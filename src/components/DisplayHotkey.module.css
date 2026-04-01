@@ -12,9 +12,10 @@
 
 .kbdKey:not(:last-child)::after {
   content: "+";
-  color: var(--mantine-color-gray-3);
+  font-size: large;
+  color: light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-8));
   position: absolute;
   top: 50%;
-  right: -11px;
+  right: -14px;
   transform: translateY(-50%);
 }
