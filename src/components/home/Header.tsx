@@ -13,6 +13,7 @@ import { Copy, Download, ExternalLink, Moon, Server, Sun } from "lucide-react";
 import { logCustomEvent } from "#/integrations/posthog";
 import classes from "./Header.module.css";
 import { ResetButton } from "./ResetButton";
+import { ScriptPreviewButton } from "./ScriptPreviewButton";
 
 type AppHeaderProps = {
   copied: boolean;
@@ -68,6 +69,7 @@ export function Header({
           </Stack>
         </Group>
         <Group gap="xs">
+          <ScriptPreviewButton script="" hasSensitiveValues />
           <ResetButton />
           <Tooltip label={copied ? "Copied!" : "Copy script"} withArrow>
             <ActionIcon

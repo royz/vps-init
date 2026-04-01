@@ -1,8 +1,7 @@
-import { Box, Grid } from "@mantine/core";
+import { Box } from "@mantine/core";
 import { createFileRoute } from "@tanstack/react-router";
 import { ConfigForm } from "#/components/home/ConfigForm";
 import { Header } from "#/components/home/Header";
-import { ScriptPreview } from "#/components/home/ScriptPreview";
 import { buildScript } from "#/lib/script-builder";
 import { useConfigStore, useHomeUiStore } from "#/stores/home-store";
 
@@ -38,20 +37,7 @@ function HomePage() {
         onCopy={handleCopy}
         onDownload={handleDownload}
       />
-      <Box>
-        <Grid gutter="lg">
-          <Grid.Col span={{ base: 12, lg: 7 }}>
-            <ConfigForm />
-          </Grid.Col>
-
-          <Grid.Col span={{ base: 12, lg: 5 }}>
-            <ScriptPreview
-              hasSensitiveValues={!!(config.userPassword || config.tailscaleAuthKey)}
-              script={script}
-            />
-          </Grid.Col>
-        </Grid>
-      </Box>
+      <ConfigForm />
     </Box>
   );
 }

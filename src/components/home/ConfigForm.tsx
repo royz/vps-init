@@ -97,7 +97,7 @@ export function ConfigForm() {
 
       <SectionCard
         title="Create Sudo User"
-        description="A non-root user with sudo privileges — required"
+        description="A non-root user with sudo privileges - required"
         icon={User}
         color="blue"
         alwaysEnabled
@@ -172,7 +172,7 @@ export function ConfigForm() {
                 />
                 <Switch
                   label="Disable password authentication"
-                  description="SSH keys only — make sure keys are installed first"
+                  description="SSH keys only - make sure keys are installed first"
                   checked={config.disablePasswordAuth}
                   onChange={(event) => update("disablePasswordAuth", event.currentTarget.checked)}
                 />
@@ -299,7 +299,7 @@ export function ConfigForm() {
 
       <SectionCard
         title="Python"
-        description="Install uv — the fast Python package and project manager"
+        description="Install uv - the fast Python package and project manager"
         icon={Terminal}
         color="cyan"
         enabled={config.uvEnabled}
@@ -444,7 +444,7 @@ export function ConfigForm() {
           <Divider />
           <Switch
             label="Install zoxide"
-            description="Smarter cd — use z <dir> to jump to frequently visited directories"
+            description="Smarter cd - use z <dir> to jump to frequently visited directories"
             checked={config.zoxideEnabled}
             onChange={(event) => update("zoxideEnabled", event.currentTarget.checked)}
           />

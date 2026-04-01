@@ -1,7 +1,7 @@
-import type { VpsConfig } from "./vps-config";
-import dedent from "dedent";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import dedent from "dedent";
+import type { VpsConfig } from "./vps-config";
 
 dayjs.extend(utc);
 
@@ -27,13 +27,13 @@ function block(title: string, body: string): string {
 }
 
 export function buildScript(config: VpsConfig): string {
-	const generatedAt = dayjs().utc().format("YYYY-MM-DD HH:mm (UTC)")
+	const generatedAt = dayjs().utc().format("YYYY-MM-DD HH:mm (UTC)");
 	const sections: string[] = [];
 
 	// ── Shebang & header ─────────────────────────────────────
 	sections.push(dedent`#!/usr/bin/env bash
     # ════════════════════════════════════════════════════════════
-    # VPS Init — Bootstrap Script
+    # VPS Init - Bootstrap Script
     # Generated at: ${generatedAt}
     # ════════════════════════════════════════════════════════════
     # Review this script carefully before running.
@@ -44,11 +44,11 @@ export function buildScript(config: VpsConfig): string {
     set -euo pipefail
     export DEBIAN_FRONTEND=noninteractive
     TARGET_USER="${config.username.trim()}"
-    [ -z "$TARGET_USER" ] && { echo "❌  TARGET_USER is not set — set a username before running this script."; exit 1; }
+    [ -z "$TARGET_USER" ] && { echo "❌  TARGET_USER is not set - set a username before running this script."; exit 1; }
 
     echo ""
     echo "┌──────────────────────────────────────────────────────────┐"
-    echo "│             VPS Init — Bootstrap Starting                │"
+    echo "│             VPS Init - Bootstrap Starting                │"
     echo "└──────────────────────────────────────────────────────────┘"
     echo ""
   `);
@@ -56,20 +56,25 @@ export function buildScript(config: VpsConfig): string {
 	// ── System update ────────────────────────────────────────
 	if (config.updatePackages) {
 		sections.push(
-			block("System Update & Upgrade", dedent`
+			block(
+				"System Update & Upgrade",
+				dedent`
 				echo "→ Updating system packages..."
 				apt-get update -y
 				apt-get upgrade -y
 				apt-get autoremove -y
 				echo "✓ System updated."
-			`),
+			`,
+			),
 		);
 	}
 
 	// ── Hostname ─────────────────────────────────────────────
 	if (config.hostname.trim()) {
 		sections.push(
-			block("Hostname", dedent`
+			block(
+				"Hostname",
+				dedent`
 				HOSTNAME="${config.hostname.trim()}"
 				echo "→ Setting hostname to: $HOSTNAME"
 				hostnamectl set-hostname "$HOSTNAME"
@@ -77,19 +82,23 @@ export function buildScript(config: VpsConfig): string {
 				  echo "127.0.1.1 $HOSTNAME" >> /etc/hosts
 				fi
 				echo "✓ Hostname configured."
-			`),
+			`,
+			),
 		);
 	}
 
 	// ── Timezone ─────────────────────────────────────────────
 	if (config.timezone) {
 		sections.push(
-			block("Timezone", dedent`
+			block(
+				"Timezone",
+				dedent`
 				TIMEZONE="${config.timezone}"
 				echo "→ Setting timezone to: $TIMEZONE"
 				timedatectl set-timezone "$TIMEZONE"
 				echo "✓ Timezone set."
-			`),
+			`,
+			),
 		);
 	}
 
@@ -98,13 +107,13 @@ export function buildScript(config: VpsConfig): string {
 		const createUserBody = dedent`
 			echo "→ Setting up user: $TARGET_USER"
 			if id "$TARGET_USER" &>/dev/null; then
-			  echo "  User $TARGET_USER already exists — skipping creation."
+			  echo "  User $TARGET_USER already exists - skipping creation."
 			else
 			  useradd -m -s /bin/bash "$TARGET_USER"
 			  ${
 					config.userPassword
 						? `echo "$TARGET_USER:${config.userPassword}" | chpasswd  # ⚠ Change this password after first login`
-						: `# ⚠ No password set — run: passwd ${config.username.trim()}`
+						: `# ⚠ No password set - run: passwd ${config.username.trim()}`
 				}
 			  usermod -aG sudo "$TARGET_USER"
 			  echo "✓ User $TARGET_USER created with sudo access."
@@ -212,7 +221,9 @@ export function buildScript(config: VpsConfig): string {
 	// ── Fail2ban ──────────────────────────────────────────────
 	if (config.fail2banEnabled) {
 		sections.push(
-			block("Fail2ban", dedent`
+			block(
+				"Fail2ban",
+				dedent`
 				echo "→ Installing fail2ban..."
 				apt-get install -y fail2ban
 
@@ -229,32 +240,38 @@ export function buildScript(config: VpsConfig): string {
 
 				systemctl enable --now fail2ban
 				echo "✓ Fail2ban installed and active."
-			`),
+			`,
+			),
 		);
 	}
 
 	// ── Unattended upgrades ───────────────────────────────────
 	if (config.unattendedUpgradesEnabled) {
 		sections.push(
-			block("Unattended Security Upgrades", dedent`
+			block(
+				"Unattended Security Upgrades",
+				dedent`
 				echo "→ Enabling automatic security updates..."
 				apt-get install -y unattended-upgrades apt-listchanges
 				dpkg-reconfigure -plow unattended-upgrades
 				echo "✓ Unattended upgrades enabled."
-			`),
+			`,
+			),
 		);
 	}
 
 	// ── Swap ──────────────────────────────────────────────────
 	if (config.swapEnabled) {
 		sections.push(
-			block(`Swap (${config.swapSize})`, dedent`
+			block(
+				`Swap (${config.swapSize})`,
+				dedent`
 				echo "→ Configuring swap..."
 				SWAP_FILE="/swapfile"
 				SWAP_SIZE="${config.swapSize}"
 
 				if [ -f "$SWAP_FILE" ]; then
-				  echo "  Swap file already exists — skipping."
+				  echo "  Swap file already exists - skipping."
 				else
 				  fallocate -l "$SWAP_SIZE" "$SWAP_FILE"
 				  chmod 600 "$SWAP_FILE"
@@ -267,14 +284,17 @@ export function buildScript(config: VpsConfig): string {
 				# Optimize for server workloads
 				sysctl -w vm.swappiness=10
 				grep -q 'vm.swappiness' /etc/sysctl.conf || echo 'vm.swappiness=10' >> /etc/sysctl.conf
-			`),
+			`,
+			),
 		);
 	}
 
 	// ── Baseline utilities ────────────────────────────────────
 	if (config.baselineUtilities) {
 		sections.push(
-			block("Baseline Utilities", dedent`
+			block(
+				"Baseline Utilities",
+				dedent`
 				echo "→ Installing baseline utilities..."
 				apt-get install -y \\
 				  curl wget git vim nano \\
@@ -283,7 +303,8 @@ export function buildScript(config: VpsConfig): string {
 				  jq ripgrep unzip zip \\
 				  net-tools dnsutils ncdu tree mtr
 				echo "✓ Baseline utilities installed."
-			`),
+			`,
+			),
 		);
 	}
 
@@ -320,7 +341,9 @@ export function buildScript(config: VpsConfig): string {
 		}
 
 		sections.push(
-			block(`Node.js ${config.nodejsVersion} (via fnm)`, dedent`
+			block(
+				`Node.js ${config.nodejsVersion} (via fnm)`,
+				dedent`
 				echo "→ Installing Node.js ${config.nodejsVersion} for $TARGET_USER (via fnm)..."
 				su - "$TARGET_USER" -s /bin/bash << 'NODESETUP'
 				set -euo pipefail
@@ -334,7 +357,8 @@ export function buildScript(config: VpsConfig): string {
 				npm --version
 				NODESETUP
 				echo "✓ Node.js installed."
-			`),
+			`,
+			),
 		);
 	}
 
@@ -350,7 +374,9 @@ export function buildScript(config: VpsConfig): string {
 			: "";
 
 		sections.push(
-			block("Python (uv)", dedent`
+			block(
+				"Python (uv)",
+				dedent`
 				echo "→ Installing uv (Python package manager) for $TARGET_USER..."
 				su - "$TARGET_USER" -s /bin/bash << 'UVSETUP'
 				set -euo pipefail
@@ -360,7 +386,8 @@ export function buildScript(config: VpsConfig): string {
 				${pythonInstallBody}
 				UVSETUP
 				echo "✓ uv installed."
-			`),
+			`,
+			),
 		);
 	}
 
@@ -377,7 +404,9 @@ export function buildScript(config: VpsConfig): string {
 			: "";
 
 		sections.push(
-			block("Docker", dedent`
+			block(
+				"Docker",
+				dedent`
 				echo "→ Installing Docker..."
 
 				# Remove legacy packages
@@ -405,14 +434,17 @@ export function buildScript(config: VpsConfig): string {
 				${dockerUserGroup}
 				docker --version
 				echo "✓ Docker installed."
-			`),
+			`,
+			),
 		);
 	}
 
 	// ── Reverse proxy ─────────────────────────────────────────
 	if (config.reverseProxy === "caddy") {
 		sections.push(
-			block("Caddy (Reverse Proxy)", dedent`
+			block(
+				"Caddy (Reverse Proxy)",
+				dedent`
 				echo "→ Installing Caddy..."
 				apt-get install -y debian-keyring debian-archive-keyring apt-transport-https curl
 				curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' \\
@@ -425,18 +457,22 @@ export function buildScript(config: VpsConfig): string {
 				systemctl enable --now caddy
 				caddy version
 				echo "✓ Caddy installed."
-			`),
+			`,
+			),
 		);
 	} else if (config.reverseProxy === "nginx") {
 		sections.push(
-			block("Nginx (Reverse Proxy)", dedent`
+			block(
+				"Nginx (Reverse Proxy)",
+				dedent`
 				echo "→ Installing Nginx..."
 				apt-get install -y nginx
 
 				systemctl enable --now nginx
 				nginx -v
 				echo "✓ Nginx installed."
-			`),
+			`,
+			),
 		);
 	}
 
@@ -461,7 +497,7 @@ export function buildScript(config: VpsConfig): string {
 					upFlags.push("--advertise-exit-node");
 				return dedent`
 
-					# Auth key provided — connecting automatically
+					# Auth key provided - connecting automatically
 					tailscale up ${upFlags.join(" ")}
 					${
 						config.tailscaleAdvertiseExitNode
@@ -494,7 +530,9 @@ export function buildScript(config: VpsConfig): string {
 		})();
 
 		sections.push(
-			block("Tailscale (VPN)", dedent`
+			block(
+				"Tailscale (VPN)",
+				dedent`
 				echo "→ Installing Tailscale..."
 				curl -fsSL https://tailscale.com/install.sh | sh
 
@@ -504,7 +542,8 @@ export function buildScript(config: VpsConfig): string {
 
 				tailscale status || true
 				echo "✓ Tailscale installed."
-			`),
+			`,
+			),
 		);
 	}
 
@@ -585,7 +624,9 @@ export function buildScript(config: VpsConfig): string {
 		`;
 
 		sections.push(
-			block(`Zsh${config.ohMyZshEnabled ? " & Oh My Zsh" : ""}`, dedent`
+			block(
+				`Zsh${config.ohMyZshEnabled ? " & Oh My Zsh" : ""}`,
+				dedent`
 				echo "→ Installing Zsh..."
 				apt-get install -y zsh
 				chsh -s "$(which zsh)" "$TARGET_USER"
@@ -597,14 +638,17 @@ export function buildScript(config: VpsConfig): string {
 				ZSHSETUP
 
 				echo "✓ Zsh${config.ohMyZshEnabled ? " & Oh My Zsh" : ""} configured for $TARGET_USER."
-			`),
+			`,
+			),
 		);
 	}
 
 	// ── Doppler ───────────────────────────────────────────────
 	if (config.dopplerEnabled) {
 		sections.push(
-			block("Doppler (Secrets Manager)", dedent`
+			block(
+				"Doppler (Secrets Manager)",
+				dedent`
 				echo "→ Installing Doppler CLI..."
 				apt-get install -y apt-transport-https ca-certificates curl gnupg
 				curl -sLf --retry 3 --tlsv1.2 --proto '=https' \\
@@ -621,7 +665,8 @@ export function buildScript(config: VpsConfig): string {
 				# Authenticate with: doppler login
 				# Configure a project with: doppler setup
 				echo "✓ Doppler installed."
-			`),
+			`,
+			),
 		);
 	}
 
