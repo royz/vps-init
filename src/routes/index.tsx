@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Disclaimer } from "#/components/Disclaimer";
 import { ConfigForm } from "#/components/home/ConfigForm";
 import { Header } from "#/components/home/Header";
 
@@ -45,6 +46,7 @@ function HomePage() {
   return (
     <main>
       <Header />
+      <Disclaimer />
       <ConfigForm />
     </main>
   );
