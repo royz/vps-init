@@ -10,6 +10,7 @@ import {
   Tooltip, useComputedColorScheme, useMantineColorScheme
 } from "@mantine/core";
 import { Copy, Download, ExternalLink, Moon, Server, Sun } from "lucide-react";
+import { logCustomEvent } from "#/integrations/posthog";
 import classes from "./Header.module.css";
 import { ResetButton } from "./ResetButton";
 
@@ -54,6 +55,7 @@ export function Header({
                 rel="noopener"
                 inline
                 aria-label="Visit my personal website royz.dev"
+                onClick={() => logCustomEvent("visit-personal-website")}
               >
                 <Group gap={5}>
                   <Text size="sm">
