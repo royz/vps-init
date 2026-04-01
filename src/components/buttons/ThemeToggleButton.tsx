@@ -8,7 +8,6 @@ export function ThemeToggleButton() {
 
   return (
     <IconButton
-      variant="subtle"
       color="gray"
       icon={colorScheme === "dark" ? Sun : Moon}
       onClick={() => setColorScheme(computedColorScheme === 'light' ? 'dark' : 'light')}
