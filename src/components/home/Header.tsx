@@ -24,7 +24,7 @@ export function Header() {
       <Container w="100%">
         <Group justify="space-between">
           <Group gap="sm">
-            <Image src="/logo.png" alt="VPS Init logo" w={50} h={50} radius="md" />
+            <Image src="/logo.png" alt="VPS Init logo" w={40} h={40} radius="md" />
             <Stack gap={0}>
               <Title order={4} lh={1.2} c="var(--mantine-primary-color-6)">
                 VPS Init
