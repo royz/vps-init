@@ -11,6 +11,7 @@ import { ExternalLink, Server } from "lucide-react";
 import { logCustomEvent } from "#/integrations/posthog";
 import { CopyButton } from "../buttons/CopyButton";
 import { DownloadButton } from "../buttons/DownloadButton";
+import { GitHubButton } from "../buttons/GitHubButton";
 import { ResetButton } from "../buttons/ResetButton";
 import { ScriptPreviewButton } from "../buttons/ScriptPreviewButton";
 import { ThemeToggleButton } from "../buttons/ThemeToggleButton";
@@ -59,6 +60,8 @@ export function Header() {
           <ResetButton />
           <CopyButton />
           <DownloadButton />
+          <Box w="xl" />
+          <GitHubButton />
           <ThemeToggleButton />
         </Group>
       </Group>
