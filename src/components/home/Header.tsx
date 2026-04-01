@@ -11,21 +11,19 @@ import {
 } from "@mantine/core";
 import { Copy, Download, ExternalLink, Moon, Server, Sun } from "lucide-react";
 import { logCustomEvent } from "#/integrations/posthog";
-import { DisplayHotkey } from "../DisplayHotkey";
+import { DownloadButton } from "../buttons/DownloadButton";
+import { ResetButton } from "../buttons/ResetButton";
+import { ScriptPreviewButton } from "../buttons/ScriptPreviewButton";
 import classes from "./Header.module.css";
-import { ResetButton } from "./ResetButton";
-import { ScriptPreviewButton } from "./ScriptPreviewButton";
 
 type AppHeaderProps = {
   copied: boolean;
   onCopy: () => void;
-  onDownload: () => void;
 };
 
 export function Header({
   copied,
   onCopy,
-  onDownload,
 }: AppHeaderProps) {
   const { setColorScheme, colorScheme } = useMantineColorScheme();
   const computedColorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true });
@@ -80,16 +78,7 @@ export function Header({
               <Copy size={16} />
             </ActionIcon>
           </Tooltip>
-          <Tooltip label="Download as .sh file" withArrow>
-            <ActionIcon
-              variant="default"
-              size="lg"
-              radius="md"
-              onClick={onDownload}
-            >
-              <Download size={16} />
-            </ActionIcon>
-          </Tooltip>
+          <DownloadButton />
           <Tooltip label={colorScheme === "dark" ? "Light mode" : "Dark mode"} withArrow>
             <ActionIcon
               variant="subtle"
