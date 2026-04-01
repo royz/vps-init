@@ -18,12 +18,4 @@
   * Then once prompted, type "Y" to auto add the database to your wrangler config.
   * Put the binding name as "DB" since that's what the code references, but you can change this if you'd like, just make sure to update the code references as well.
   */
-	"d1_databases": [
-		{
-			"binding": "DB",
-			"database_name": "<database-name>",
-			"database_id": "<database-id>",
-      "migrations_dir": "./drizzle/"
-		}
-	]
 }
