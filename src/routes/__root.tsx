@@ -1,25 +1,22 @@
 
 import codeHighlightCss from "@mantine/code-highlight/styles.css?url";
-import { createTheme, MantineProvider } from "@mantine/core";
+import { ColorSchemeScript, createTheme, MantineProvider, mantineHtmlProps } from "@mantine/core";
 import mantineCss from "@mantine/core/styles.css?url";
 import {
   createRootRouteWithContext,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { ColorSchemeScript, mantineHtmlProps } from '@mantine/core';
-import appCss from "../styles.css?url";
 import PostHogProvider from "#/integrations/posthog";
+import appCss from "../styles.css?url";
 
-interface MyRouterContext {
-}
 
 const theme = createTheme({
   primaryColor: "teal",
   fontFamily: "Manrope, ui-sans-serif, system-ui, sans-serif",
 });
 
-export const Route = createRootRouteWithContext<MyRouterContext>()({
+export const Route = createRootRouteWithContext()({
   head: () => ({
     meta: [
       {
