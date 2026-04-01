@@ -1,0 +1,20 @@
+.kbdGroup {
+  gap: 0;
+}
+
+.kbdKey {
+  position: relative;
+}
+
+.kbdKey:not(:last-child) {
+  margin-right: 16px;
+}
+
+.kbdKey:not(:last-child)::after {
+  content: "+";
+  color: var(--mantine-color-gray-3);
+  position: absolute;
+  top: 50%;
+  right: -11px;
+  transform: translateY(-50%);
+}
