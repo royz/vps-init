@@ -1,21 +1,21 @@
 .kbdGroup {
-  gap: 0;
+	gap: 0;
 }
 
 .kbdKey {
-  position: relative;
+	position: relative;
 }
 
 .kbdKey:not(:last-child) {
-  margin-right: 16px;
+	margin-right: 16px;
 }
 
 .kbdKey:not(:last-child)::after {
-  content: "+";
-  font-size: large;
-  color: light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-8));
-  position: absolute;
-  top: 50%;
-  right: -14px;
-  transform: translateY(-50%);
+	content: "+";
+	font-size: large;
+	color: light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-8));
+	position: absolute;
+	top: 50%;
+	right: -14px;
+	transform: translateY(-50%);
 }
