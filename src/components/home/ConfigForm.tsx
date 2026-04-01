@@ -6,6 +6,7 @@ import {
   Divider,
   Grid,
   Group,
+  type MantineColor,
   NumberInput,
   PasswordInput,
   rem,
@@ -44,6 +45,8 @@ import { useConfigStore } from "#/stores/home-store";
 import { SecretBadge } from "./SecretBadge";
 import { SectionCard } from "./SectionCard";
 
+const COLOR: MantineColor = "violet";
+
 export function ConfigForm() {
   const config = useConfigStore((state) => state.config);
   const update = useConfigStore((state) => state.updateConfig);
@@ -65,7 +68,7 @@ export function ConfigForm() {
           title="System"
           description="Initial package update, hostname, and timezone"
           icon={Server}
-          color="indigo"
+          color={COLOR}
           alwaysEnabled
         >
           <Stack gap="md">
@@ -106,13 +109,13 @@ export function ConfigForm() {
           title="Create Sudo User"
           description="A non-root user with sudo privileges - required"
           icon={User}
-          color="blue"
+          color={COLOR}
           alwaysEnabled
         >
           <Stack gap="md">
             <Alert
               icon={<Info size={14} />}
-              color="blue"
+              color={COLOR}
               variant="light"
               p="xs"
               fz="xs"
@@ -164,14 +167,14 @@ export function ConfigForm() {
           title="SSH Hardening"
           description="Restrict SSH access to reduce attack surface"
           icon={ShieldCheck}
-          color="violet"
+          color={COLOR}
           enabled={config.sshHardening}
           onToggle={(value) => update("sshHardening", value)}
         >
           <Stack gap="md">
             <Alert
               icon={<Info size={14} />}
-              color="orange"
+              color={COLOR}
               variant="light"
               p="xs"
               fz="xs"
@@ -219,7 +222,7 @@ export function ConfigForm() {
           title="Security"
           description="Firewall, intrusion prevention, and automatic updates"
           icon={Shield}
-          color="red"
+          color={COLOR}
           alwaysEnabled
         >
           <Stack gap="lg">
@@ -273,7 +276,7 @@ export function ConfigForm() {
           title="System Tuning"
           description="Swap memory and kernel tweaks"
           icon={HardDrive}
-          color="yellow"
+          color={COLOR}
           alwaysEnabled
         >
           <Box>
@@ -305,7 +308,7 @@ export function ConfigForm() {
           title="Baseline Utilities"
           description="curl, git, htop, tmux, jq, ripgrep, and more"
           icon={Package}
-          color="grape"
+          color={COLOR}
           enabled={config.baselineUtilities}
           onToggle={(value) => update("baselineUtilities", value)}
         >
@@ -322,7 +325,7 @@ export function ConfigForm() {
           title="Node.js"
           description="Install via fnm (Fast Node Manager)"
           icon={ToggleRight}
-          color="green"
+          color={COLOR}
           enabled={config.nodejsEnabled}
           onToggle={(value) => update("nodejsEnabled", value)}
         >
@@ -343,7 +346,7 @@ export function ConfigForm() {
           title="Python"
           description="Install uv - the fast Python package and project manager"
           icon={Terminal}
-          color="cyan"
+          color={COLOR}
           enabled={config.uvEnabled}
           onToggle={(value) => update("uvEnabled", value)}
         >
@@ -361,7 +364,7 @@ export function ConfigForm() {
           title="Docker"
           description="Install Docker Engine from the official repository"
           icon={Server}
-          color="blue"
+          color={COLOR}
           enabled={config.dockerEnabled}
           onToggle={(value) => update("dockerEnabled", value)}
         >
@@ -389,7 +392,7 @@ export function ConfigForm() {
           title="Reverse Proxy"
           description="Caddy auto-manages TLS; Nginx gives manual control"
           icon={Globe}
-          color="orange"
+          color={COLOR}
           alwaysEnabled
         >
           <Box>
@@ -410,7 +413,7 @@ export function ConfigForm() {
             {config.reverseProxy !== "none" && (
               <Alert
                 icon={<Info size={14} />}
-                color="orange"
+                color={COLOR}
                 variant="light"
                 p="xs"
                 fz="xs"
@@ -427,7 +430,7 @@ export function ConfigForm() {
           title="Tailscale"
           description="Zero-config VPN for secure private networking"
           icon={Network}
-          color="indigo"
+          color={COLOR}
           enabled={config.tailscaleEnabled}
           onToggle={(value) => update("tailscaleEnabled", value)}
         >
@@ -475,7 +478,7 @@ export function ConfigForm() {
           title="Shell"
           description="Zsh, Oh My Zsh, autosuggestions, and zoxide"
           icon={Terminal}
-          color="pink"
+          color={COLOR}
           enabled={config.zshEnabled}
           onToggle={(value) => update("zshEnabled", value)}
         >
@@ -524,13 +527,13 @@ export function ConfigForm() {
           title="Doppler"
           description="Secrets manager CLI for environment variable management"
           icon={KeyRound}
-          color="indigo"
+          color={COLOR}
           enabled={config.dopplerEnabled}
           onToggle={(value) => update("dopplerEnabled", value)}
         >
           <Alert
             icon={<Info size={14} />}
-            color="indigo"
+            color={COLOR}
             variant="light"
             p="xs"
             fz="xs"
