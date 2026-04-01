@@ -1,24 +1,34 @@
 import { ActionIcon, type ActionIconProps, Group, Text, Tooltip, type TooltipProps } from "@mantine/core";
 import { type Hotkey, useHotkey } from "@tanstack/react-hotkeys";
-import type { LucideIcon } from "lucide-react";
-import { useMemo } from "react";
+import { Check, type LucideIcon } from "lucide-react";
+import { useMemo, useState } from "react";
 import { DisplayHotkey } from "./DisplayHotkey";
 
 type Props = {
   icon: LucideIcon;
-  onClick?: () => void;
+  onClick?: () => Promise<void> | void;
   hotkey?: Hotkey;
   description?: string;
+  showSuccessState?: boolean;
 } & Omit<ActionIconProps, "children" | "children">;
 
 
-export function IconButton({ icon, onClick, hotkey, description, ...actionIconProps }: Props) {
-  const Icon = icon;
+export function IconButton({ icon, onClick, hotkey, description, showSuccessState, ...actionIconProps }: Props) {
+  const [success, setSuccess] = useState(false);
+  const Icon = success ? Check : icon;
+
+  async function handleClick() {
+    if (onClick) await onClick();
+    if (showSuccessState) {
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 1000);
+    }
+  }
 
   useHotkey(
     hotkey || "E", // "E" would never be used. It's just to satisfy the type requirement of useHotkey.
-    () => onClick?.(),
-    { enabled: !!onClick && !!hotkey }
+    () => handleClick(),
+    { enabled: !!hotkey }
   );
 
   const tooltipProps = useMemo((): TooltipProps => {
