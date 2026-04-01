@@ -104,6 +104,8 @@ export function buildScript(config: VpsConfig): string {
 
 	// ── Create sudo user ─────────────────────────────────────
 	if (config.username.trim()) {
+		const hasSshKeys = Boolean(config.sshAuthorizedKeys.trim());
+
 		const createUserBody = dedent`
 			echo "→ Setting up user: $TARGET_USER"
 			if id "$TARGET_USER" &>/dev/null; then
@@ -120,9 +122,8 @@ export function buildScript(config: VpsConfig): string {
 			fi
 		`;
 
-		const sshKeysBody = config.sshAuthorizedKeys.trim()
+		const sshKeysBody = hasSshKeys
 			? dedent`
-
 				SSH_DIR="/home/$TARGET_USER/.ssh"
 				mkdir -p "$SSH_DIR"
 				cat >> "$SSH_DIR/authorized_keys" << 'SSHKEYS'
@@ -135,11 +136,13 @@ export function buildScript(config: VpsConfig): string {
 			`
 			: "";
 
-		sections.push(block("Create Sudo User", `${createUserBody}${sshKeysBody}`));
+		const createUserSections = [createUserBody, sshKeysBody].filter(Boolean);
+		sections.push(block("Create Sudo User", createUserSections.join("\n\n")));
 	}
 
 	// ── SSH hardening ─────────────────────────────────────────
 	if (config.sshHardening) {
+		const hasSshKeys = Boolean(config.sshAuthorizedKeys.trim());
 		const sshHardeningBody = dedent`
 			# ⚠ CAUTION: Ensure you have a working login method before applying.
 			echo "→ Hardening SSH configuration..."
@@ -166,11 +169,15 @@ export function buildScript(config: VpsConfig): string {
 
 			${
 				config.disablePasswordAuth
-					? dedent`
-						# Requires SSH keys to be already installed before enabling
-						sed -i 's/^#*PasswordAuthentication .*/PasswordAuthentication no/' "$SSHD_CONFIG"
-						grep -q '^PasswordAuthentication ' "$SSHD_CONFIG" || echo 'PasswordAuthentication no' >> "$SSHD_CONFIG"
-					`
+					? hasSshKeys
+						? dedent`
+							# Requires SSH keys to be already installed before enabling
+							sed -i 's/^#*PasswordAuthentication .*/PasswordAuthentication no/' "$SSHD_CONFIG"
+							grep -q '^PasswordAuthentication ' "$SSHD_CONFIG" || echo 'PasswordAuthentication no' >> "$SSHD_CONFIG"
+						`
+						: dedent`
+							echo "⚠ Skipping PasswordAuthentication=no because no SSH authorized keys were provided."
+						`
 					: ""
 			}
 
@@ -193,7 +200,7 @@ export function buildScript(config: VpsConfig): string {
 				`
 				: "";
 		const tailscaleRule = config.tailscaleEnabled
-			? "ufw allow in on tailscale0 comment 'Tailscale'"
+			? "ip link show tailscale0 >/dev/null 2>&1 && ufw allow in on tailscale0 comment 'Tailscale' || echo \"ℹ tailscale0 not present yet - skipping UFW interface rule for now.\""
 			: "";
 		const customRules = config.firewallExtraPorts
 			.map((port) => `ufw allow ${port} comment 'Custom'`)
@@ -296,12 +303,7 @@ export function buildScript(config: VpsConfig): string {
 				"Baseline Utilities",
 				dedent`
 				echo "→ Installing baseline utilities..."
-				apt-get install -y \\
-				  curl wget git vim nano \\
-				  htop btop tmux screen \\
-				  build-essential ca-certificates gnupg lsb-release \\
-				  jq ripgrep unzip zip \\
-				  net-tools dnsutils ncdu tree mtr
+				apt-get install -y curl wget git vim nano htop btop tmux screen build-essential ca-certificates gnupg lsb-release jq ripgrep unzip zip net-tools dnsutils ncdu tree mtr
 				echo "✓ Baseline utilities installed."
 			`,
 			),
@@ -416,16 +418,10 @@ export function buildScript(config: VpsConfig): string {
 
 				# Add Docker's official GPG key
 				install -m 0755 -d /etc/apt/keyrings
-				curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
-				  | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+				curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 				chmod a+r /etc/apt/keyrings/docker.gpg
 
-				echo \
-				  "deb [arch=$(dpkg --print-architecture) \
-				  signed-by=/etc/apt/keyrings/docker.gpg] \
-				  https://download.docker.com/linux/ubuntu \
-				  $(. /etc/os-release && echo $VERSION_CODENAME) stable" \
-				  | tee /etc/apt/sources.list.d/docker.list > /dev/null
+				echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo $VERSION_CODENAME) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
 				apt-get update -y
 
 				apt-get install -y ${dockerPackages.join(" ")}
@@ -447,10 +443,8 @@ export function buildScript(config: VpsConfig): string {
 				dedent`
 				echo "→ Installing Caddy..."
 				apt-get install -y debian-keyring debian-archive-keyring apt-transport-https curl
-				curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' \\
-				  | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
-				curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' \\
-				  | tee /etc/apt/sources.list.d/caddy-stable.list
+				curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+				curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | tee /etc/apt/sources.list.d/caddy-stable.list
 				apt-get update -y
 				apt-get install -y caddy
 
@@ -566,8 +560,8 @@ export function buildScript(config: VpsConfig): string {
 						? dedent`
 
 							echo "→ Installing zsh-autosuggestions & zsh-completions..."
-							git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-							git clone --depth=1 https://github.com/zsh-users/zsh-completions ~/.oh-my-zsh/custom/plugins/zsh-completions
+							[ -d ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions ] || git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+							[ -d ~/.oh-my-zsh/custom/plugins/zsh-completions ] || git clone --depth=1 https://github.com/zsh-users/zsh-completions ~/.oh-my-zsh/custom/plugins/zsh-completions
 							sed -i 's/^plugins=(\\(.*\\))/plugins=(\\1 zsh-autosuggestions zsh-completions)/' ~/.zshrc
 							echo "✓ Autosuggestions & completions enabled."
 						`
@@ -651,12 +645,8 @@ export function buildScript(config: VpsConfig): string {
 				dedent`
 				echo "→ Installing Doppler CLI..."
 				apt-get install -y apt-transport-https ca-certificates curl gnupg
-				curl -sLf --retry 3 --tlsv1.2 --proto '=https' \\
-				  'https://packages.doppler.com/public/cli/gpg.DE2A7741A397C129.key' \\
-				  | gpg --dearmor -o /usr/share/keyrings/doppler-archive-keyring.gpg
-				echo "deb [signed-by=/usr/share/keyrings/doppler-archive-keyring.gpg] \\
-				  https://packages.doppler.com/public/cli/deb/debian any-version main" \\
-				  | tee /etc/apt/sources.list.d/doppler-cli.list
+				curl -sLf --retry 3 --tlsv1.2 --proto '=https' 'https://packages.doppler.com/public/cli/gpg.DE2A7741A397C129.key' | gpg --dearmor -o /usr/share/keyrings/doppler-archive-keyring.gpg
+				echo "deb [signed-by=/usr/share/keyrings/doppler-archive-keyring.gpg] https://packages.doppler.com/public/cli/deb/debian any-version main" | tee /etc/apt/sources.list.d/doppler-cli.list
 				apt-get update -y
 				apt-get install -y doppler
 

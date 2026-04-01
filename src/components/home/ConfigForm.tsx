@@ -34,6 +34,7 @@ import {
   ToggleRight,
   User,
 } from "lucide-react";
+import { useState } from "react";
 import { config } from "#/config";
 import {
   NODE_VERSIONS,
@@ -48,9 +49,33 @@ import { SectionCard } from "./SectionCard";
 
 const COLOR: MantineColor = config.color;
 
+/** Validate SSH public key format (one per line). */
+function validateSshKeys(input: string): { valid: boolean; error?: string } {
+  const trimmed = input.trim();
+  if (!trimmed) {
+    return { valid: false, error: "SSH public keys are required" };
+  }
+
+  // Pattern: key type (ssh-rsa, ssh-ed25519, ecdsa-sha2-nistp*, ssh-dss), space, base64 characters, optional comment
+  const keyPattern = /^(ssh-rsa|ssh-ed25519|ecdsa-sha2-nistp256|ecdsa-sha2-nistp384|ecdsa-sha2-nistp521|ssh-dss)\s+[A-Za-z0-9+/=]+(\s+.+)?$/;
+
+  const lines = trimmed.split("\n").filter((line) => line.trim());
+  for (const line of lines) {
+    if (!keyPattern.test(line.trim())) {
+      return {
+        valid: false,
+        error: `Invalid SSH key format: ${line.substring(0, 50)}...`,
+      };
+    }
+  }
+
+  return { valid: true };
+}
+
 export function ConfigForm() {
   const config = useConfigStore((state) => state.config);
   const update = useConfigStore((state) => state.updateConfig);
+  const [sshKeyError, setSshKeyError] = useState<string | undefined>();
 
   return (
     <Container>
@@ -138,14 +163,10 @@ export function ConfigForm() {
               </Grid.Col>
               <Grid.Col span={{ base: 12, sm: 6 }}>
                 <PasswordInput
-                  label={
-                    <Group gap={4} component="span">
-                      Password
-                      <SecretBadge />
-                    </Group>
-                  }
-                  placeholder="Leave blank to skip"
+                  label="Password"
+                  placeholder="Enter a strong password"
                   value={config.userPassword}
+                  required
                   onChange={(event) =>
                     update("userPassword", event.currentTarget.value)
                   }
@@ -154,12 +175,18 @@ export function ConfigForm() {
             </Grid>
             <Textarea
               label="SSH Authorized Public Keys"
-              placeholder="ssh-ed25519 AAAA..."
-              rows={3}
+              placeholder="ssh-ed25519 AAAA...&#10;ssh-rsa BBBB..."
+              description="One public key per line. Supports ssh-rsa, ssh-ed25519, ecdsa-sha2-nistp*, ssh-dss"
+              autosize
+              minRows={2}
               value={config.sshAuthorizedKeys}
-              onChange={(event) =>
-                update("sshAuthorizedKeys", event.currentTarget.value)
-              }
+              error={sshKeyError}
+              onChange={(event) => {
+                update("sshAuthorizedKeys", event.currentTarget.value);
+                const result = validateSshKeys(event.currentTarget.value);
+                setSshKeyError(result.error);
+              }}
+              required
             />
           </Stack>
         </SectionCard>

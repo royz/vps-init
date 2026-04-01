@@ -14,3 +14,4 @@ todos.json
 wrangler.jsonc
 wrangler.toml
 install-output.log
+generated-script*.sh
