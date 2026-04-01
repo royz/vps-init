@@ -141,9 +141,7 @@ Current stack seen in the repository:
 - TypeScript
 - Vite
 - Mantine should be the UI component system
-- tRPC
 - TanStack Router
-- TanStack Query
 - Biome
 
 This is more infrastructure than the product likely needs today. Keep implementation simple unless a more complex abstraction is justified.
