@@ -20,22 +20,13 @@ function HomePage() {
     });
   }
 
-  function handleDownload() {
-    const blob = new Blob([script], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "vps-init.sh";
-    a.click();
-    URL.revokeObjectURL(url);
-  }
+
 
   return (
     <Box mih="100dvh" maw={1400} mx="auto" px="md">
       <Header
         copied={copied}
         onCopy={handleCopy}
-        onDownload={handleDownload}
       />
       <ConfigForm />
     </Box>
