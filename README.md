@@ -1,6 +1,10 @@
 # VPS Init
 
-VPS Init is a lightweight Cloudflare-hosted web app that generates a tailored Bash script for bootstrapping a fresh Linux VPS, with shareable non-secret config in query params and short-lived token-based script retrieval.
+VPS Init is a lightweight Cloudflare-hosted web app that generates a tailored Bash script for bootstrapping a fresh Linux VPS.
+
+The app is fully client-side only. There is no backend server or API for storing configs or retrieving scripts.
+
+Current OS support is Ubuntu/Debian only.
 
 ## Setup
 
@@ -34,28 +38,27 @@ VPS Init is a lightweight Cloudflare-hosted web app that generates a tailored Ba
 
 - Update and upgrade packages
 - Change hostname
+- Set timezone (defaults to UTC)
+- Enable unattended security upgrades
 - Create a new sudo user
-- SSH hardening
-- Firewall setup
-- unattended-upgrades
-- fail2ban
-- Swap setup
-- Timezone configuration
-- Baseline utility packages
-- Install Node.js via `fnm`
-- Choose the Node.js version to install
-- Install `uv`
-- Optionally install the latest Python version
-- Install Docker
-- Install Docker Compose
-- Optionally install Docker client tools
-- Reverse proxy install such as Caddy or Nginx
-- Install Tailscale
-- Optionally provide a Tailscale auth key for automatic login
-- Install `zsh`
-- Install `oh-my-zsh`
-- Customize the shell prompt
-- Install Doppler
-- Optionally perform initial Doppler setup
+- Change SSH port
+- Disable root login
+- Add `authorized_keys` to the new user
+- Disable password authentication
+- Install and configure Fail2Ban
+- Enable firewall with UFW
+- Set up system-level environment variables
+- Install, configure, and authenticate Tailscale
+- Install reverse proxy (Nginx or Caddy)
+- Create a swap file with custom size
+- Set up zsh with oh-my-zsh, zoxide, and command suggestions
 - Safer rerun behavior and idempotency markers
+
+### Optional Installs
+
+- `fnm` and latest LTS Node.js
+- `uv` and Python
+- Docker and Compose
+- Doppler
+- Useful utilities: `curl`, `wget`, `git`, `vim`, `nano`, `htop`, `btop`, `tmux`, `screen`, `build-essential`, `jq`, `ripgrep`, `unzip`, `zip`, `net-tools`, `dnsutils`, `ncdu`, `tree`, `mtr`
 

@@ -4,7 +4,9 @@
 
 This repository is for a lightweight web app that generates a tailor-made Bash script for bootstrapping a fresh Linux VPS.
 
-The app should be hostable on Cloudflare and use a minimal backend for temporary config storage and secure script retrieval.
+The app should be hostable on Cloudflare and run entirely client-side with no backend server.
+
+For now, generated scripts target Ubuntu/Debian systems only.
 
 The current codebase is a minimal TanStack Start scaffold. The actual product behavior still needs to be built.
 
@@ -20,7 +22,7 @@ Help a user configure a set of VPS setup options in a web UI and generate a read
 - Safe defaults with optional advanced sections
 - Mantine-based UI
 - Query-param sharing for non-secret config
-- Short-lived persisted configs and tokens
+- No backend persistence layer
 
 ## Core User Promise
 
@@ -32,29 +34,26 @@ Help a user configure a set of VPS setup options in a web UI and generate a read
 
 - Update and upgrade packages
 - Change hostname
+- Set timezone (defaults to UTC)
+- Enable unattended security upgrades
 - Create a new sudo user
-- SSH hardening
-- Firewall setup
-- unattended-upgrades
-- fail2ban
-- Swap setup
-- Timezone configuration
-- Baseline utility packages
-- Install Node.js via `fnm`
-- Let the user choose the Node.js version
-- Install `uv`
-- Optionally install the latest Python version
-- Install Docker
-- Install Docker Compose
-- Optionally install Docker client tools
-- Reverse proxy install such as Caddy or Nginx
-- Install Tailscale
-- Optionally accept a Tailscale auth key for automatic login
-- Install `zsh`
-- Install `oh-my-zsh`
-- Customize the shell prompt
-- Install Doppler
-- Optionally perform first-pass Doppler setup if practical
+- Change SSH port
+- Disable root login
+- Add authorized keys to the new user
+- Disable password authentication
+- Install and configure Fail2Ban
+- Enable firewall with UFW
+- Set up system-level environment variables
+- Install, configure, and authenticate Tailscale
+- Install reverse proxy (Nginx or Caddy)
+- Create a swap file with custom size
+- Set up zsh with oh-my-zsh, zoxide, and command suggestions
+- Optional installs:
+	- `fnm` and latest LTS Node.js
+	- `uv` and Python
+	- Docker and Compose
+	- Doppler
+	- Useful utilities: `curl`, `wget`, `git`, `vim`, `nano`, `htop`, `btop`, `tmux`, `screen`, `build-essential`, `jq`, `ripgrep`, `unzip`, `zip`, `net-tools`, `dnsutils`, `ncdu`, `tree`, `mtr`
 - Safer rerun behavior and idempotency markers
 
 ### Strong Candidates
@@ -67,7 +66,7 @@ Help a user configure a set of VPS setup options in a web UI and generate a read
 ## Non-Goals
 
 - Not a full server management platform
-- Not an always-on backend with stored projects
+- Not any backend/API service for config or script storage
 - Not a multi-user dashboard
 - Not a secret storage system
 - Not a general-purpose shell IDE
@@ -81,8 +80,6 @@ Prefer a small and explicit structure:
 - A query-param serializer for all safe, non-secret options
 - A secret-aware separation between shareable config and sensitive inputs
 - A script builder that assembles Bash sections from typed options
-- A temporary persistence layer for generated configs, with expiration
-- A token-based retrieval path for direct `curl` execution
 - A preview panel that shows the generated script
 - A copy/download action for the final output
 
@@ -94,8 +91,6 @@ Suggested internal split:
 - Option schema and validation
 - Script section generators
 - Final script composer
-- Temporary config storage API
-- Temporary token generation and verification
 - Small content/help layer for explaining each option
 
 ## Script Generation Rules
@@ -108,15 +103,12 @@ Suggested internal split:
 - Make optional steps easy to trace in the generated result
 - Favor idempotent checks where practical
 - If a step is risky, comment it clearly in the script
-- If the script is retrievable through a tokenized endpoint, keep the generated output deterministic for a given stored config
+- Keep the generated output deterministic for a given config
 
 ## Security Guidance
 
 - Do not store user secrets by default
-- Treat tokens as transient inputs
 - Non-secret state may go into query params, but secrets must never go there
-- Temporary stored configs should have a short TTL, around 15 minutes unless requirements change
-- Temporary execution tokens should be short-lived, unguessable, and revocable by expiry
 - Do not assume the generated script will only run once
 - Avoid unsafe curl-pipe patterns unless there is no reasonable alternative and the tradeoff is visible
 - Make OS or distro assumptions explicit
@@ -130,7 +122,7 @@ Suggested internal split:
 - Advanced options should be available without cluttering the default flow
 - The generated script preview is a first-class part of the product
 - Good defaults matter more than exposing every possible Linux tweak
-- Sharing should feel native: bookmarkable URLs for safe settings, with a separate secure path for secret-backed execution
+- Sharing should feel native: bookmarkable URLs for safe settings while keeping secrets out of URLs
 
 ## Stack Context
 
@@ -168,8 +160,8 @@ When making changes in this repo:
 - Keep Cloudflare deployment constraints in mind
 - Keep Mantine as the default UI system unless the user changes direction
 - Keep shareable state and secret state separated by design
-- Prefer TTL-based persistence for generated configs instead of long-term storage
+- Keep the app client-side only unless requirements explicitly change
 
 ## Single-Sentence Definition
 
-VPS Init is a Cloudflare-hosted VPS bootstrap script generator with Mantine UI, shareable URL-based config, and short-lived tokenized script retrieval for fresh Linux server setup.
+VPS Init is a Cloudflare-hosted, client-side VPS bootstrap script generator with Mantine UI and shareable URL-based non-secret config for fresh Linux server setup.
