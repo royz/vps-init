@@ -1,6 +1,7 @@
 import {
   Anchor,
   Box,
+  Container,
   Group,
   Stack,
   Text,
@@ -21,50 +22,52 @@ import classes from "./Header.module.css";
 export function Header() {
   return (
     <Box component="header" className={classes.header}>
-      <Group justify="space-between" w="100%">
-        <Group gap="sm">
-          <ThemeIcon variant="filled" color="teal" size={38} radius="md">
-            <Server size={20} />
-          </ThemeIcon>
-          <Stack gap={0}>
-            <Title order={4} lh={1.2} c="teal">
-              VPS Init
-            </Title>
-            <Group gap={6} align="center">
-              <Text fz="xs" c="dimmed" lh={1}>
-                Bootstrap script generator by
-              </Text>
-              <Anchor
-                href="https://royz.dev?utm_source=vps-init"
-                target="_blank"
-                fz="xs"
-                underline="always"
-                c="teal"
-                rel="noopener"
-                inline
-                aria-label="Visit my personal website royz.dev"
-                onClick={() => logCustomEvent("visit-personal-website")}
-              >
-                <Group gap={5}>
-                  <Text size="sm">
-                    royz.dev
-                  </Text>
-                  <ExternalLink size={12} />
-                </Group>
-              </Anchor>
-            </Group>
-          </Stack>
+      <Container w="100%">
+        <Group justify="space-between">
+          <Group gap="sm">
+            <ThemeIcon variant="filled" color="teal" size={38} radius="md">
+              <Server size={20} />
+            </ThemeIcon>
+            <Stack gap={0}>
+              <Title order={4} lh={1.2} c="teal">
+                VPS Init
+              </Title>
+              <Group gap={6} align="center">
+                <Text fz="xs" c="dimmed" lh={1}>
+                  Bootstrap script generator by
+                </Text>
+                <Anchor
+                  href="https://royz.dev?utm_source=vps-init"
+                  target="_blank"
+                  fz="xs"
+                  underline="always"
+                  c="teal"
+                  rel="noopener"
+                  inline
+                  aria-label="Visit my personal website royz.dev"
+                  onClick={() => logCustomEvent("visit-personal-website")}
+                >
+                  <Group gap={5}>
+                    <Text size="sm">
+                      royz.dev
+                    </Text>
+                    <ExternalLink size={12} />
+                  </Group>
+                </Anchor>
+              </Group>
+            </Stack>
+          </Group>
+          <Group gap="xs">
+            <ScriptPreviewButton />
+            <ResetButton />
+            <CopyButton />
+            <DownloadButton />
+            <Box w="xl" />
+            <GitHubButton />
+            <ThemeToggleButton />
+          </Group>
         </Group>
-        <Group gap="xs">
-          <ScriptPreviewButton />
-          <ResetButton />
-          <CopyButton />
-          <DownloadButton />
-          <Box w="xl" />
-          <GitHubButton />
-          <ThemeToggleButton />
-        </Group>
-      </Group>
+      </Container>
     </Box >
   );
 }
