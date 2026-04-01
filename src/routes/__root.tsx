@@ -7,7 +7,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import PostHogProvider from "#/integrations/posthog";
+import { PostHogProvider } from "#/integrations/posthog";
 import appCss from "../styles.css?url";
 
 
@@ -56,12 +56,12 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <ColorSchemeScript />
       </head>
       <body>
-        <PostHogProvider>
-          <MantineProvider theme={theme} defaultColorScheme="auto">
+        <MantineProvider theme={theme} defaultColorScheme="auto">
+          <PostHogProvider>
             {children}
-          </MantineProvider>
-          <Scripts />
-        </PostHogProvider>
+          </PostHogProvider>
+        </MantineProvider>
+        <Scripts />
       </body>
     </html>
   );
