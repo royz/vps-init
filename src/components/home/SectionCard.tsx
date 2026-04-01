@@ -9,6 +9,7 @@ import {
   ThemeIcon,
 } from "@mantine/core";
 import type { ComponentType, ReactNode } from "react";
+import { config } from "#/config";
 
 type SectionCardProps = {
   title: string;
@@ -25,7 +26,7 @@ export function SectionCard({
   title,
   description,
   icon: Icon,
-  color = "indigo",
+  color = config.color,
   enabled,
   onToggle,
   children,
